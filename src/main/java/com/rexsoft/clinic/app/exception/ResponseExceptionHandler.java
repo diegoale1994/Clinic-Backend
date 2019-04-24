@@ -22,9 +22,9 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		String errores = "";
 		for (ObjectError e : ex.getBindingResult().getAllErrors()) {
-			errores += e.getObjectName();
+			errores += e.getDefaultMessage();
 		}
-		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), "Validacion fallida", request.getDescription(false));
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), errores, request.getDescription(false));
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 
@@ -32,13 +32,13 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	public final ResponseEntity<Object> manejarTodasExcepciones(Exception ex, WebRequest request) {
 		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
 				request.getDescription(false));
-		return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(ModeloNotFoundException.class)
 	public final ResponseEntity<Object> manejarModeloExcepciones(ModeloNotFoundException ex, WebRequest request) {
 		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
 				request.getDescription(false));
-		return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.NOT_FOUND);
 	}
 }

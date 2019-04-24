@@ -23,57 +23,58 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rexsoft.clinic.app.exception.ModeloNotFoundException;
-import com.rexsoft.clinic.app.models.Paciente;
-import com.rexsoft.clinic.app.services.IPacienteService;
+import com.rexsoft.clinic.app.models.Consulta;
+import com.rexsoft.clinic.app.services.IConsultaService;
+
 
 
 @RestController
-@RequestMapping("/pacientes")
-public class PacienteController {
+@RequestMapping("/consultas")
+public class ConsultaController {
 
 	@Autowired
-	private IPacienteService pacienteService;
+	private IConsultaService consultaService;
 	
 	@GetMapping
-	public ResponseEntity<List<Paciente>> listar(){
-		List<Paciente> pacientes = pacienteService.listartodos();
-		return new ResponseEntity<List<Paciente>>(pacientes,HttpStatus.OK);
+	public ResponseEntity<List<Consulta>> listar(){
+		List<Consulta> consultas = consultaService.listartodos();
+		return new ResponseEntity<List<Consulta>>(consultas,HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	public Resource<Paciente> listarPorId(@PathVariable("id") Integer id) {
-		Paciente paciente = pacienteService.leer(id);
-		if(paciente == null) {
+	public Resource<Consulta> listarPorId(@PathVariable("id") Integer id) {
+		Consulta consulta = consultaService.leer(id);
+		if(consulta == null) {
 			throw new ModeloNotFoundException(id + " no encontrado !");
 		}
 		//Level 3 
-		Resource <Paciente> resource = new Resource<Paciente>(paciente);
+		Resource <Consulta> resource = new Resource<Consulta>(consulta);
 		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).listarPorId(id));
-		resource.add(linkTo.withRel("paciente-resource"));
+		resource.add(linkTo.withRel("consulta-resource"));
 		return resource;
 	}
 	
 	@PostMapping
-	public ResponseEntity<Object> registrar(@Valid @RequestBody Paciente paciente) {
-		Paciente pac = pacienteService.registrar(paciente);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pac.getIdPaciente()).toUri();
+	public ResponseEntity<Object> registrar(@Valid @RequestBody Consulta consulta) {
+		Consulta consu = consultaService.registrar(consulta);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(consu.getIdConsulta()).toUri();
 		return ResponseEntity.created(location).build();
 	}
 	
 	@PutMapping
-	public ResponseEntity<Object> actualizar(@Valid @RequestBody Paciente paciente) {
-		pacienteService.modificar(paciente);
+	public ResponseEntity<Object> actualizar(@Valid @RequestBody Consulta consulta) {
+		consultaService.modificar(consulta);
 		return new ResponseEntity<Object>(HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> eliminar(@PathVariable("id") Integer id) {
 		
-		Paciente paciente = pacienteService.leer(id);
-		if(paciente == null) {
+		Consulta consulta = consultaService.leer(id);
+		if(consulta == null) {
 			throw new ModeloNotFoundException(id + " no encontrado !");
 		}else {
-			pacienteService.eliminar(id);	
+			consultaService.eliminar(id);	
 		}
 		return new ResponseEntity<Object>(HttpStatus.OK);
 	}
