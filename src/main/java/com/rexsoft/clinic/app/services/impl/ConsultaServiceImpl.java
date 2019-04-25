@@ -4,8 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.rexsoft.clinic.app.dto.ConsultaListaExamenDTO;
 import com.rexsoft.clinic.app.models.Consulta;
+import com.rexsoft.clinic.app.repos.IConsultaExamenRepo;
 import com.rexsoft.clinic.app.repos.IConsultaRepo;
 import com.rexsoft.clinic.app.services.IConsultaService;
 
@@ -15,6 +18,9 @@ public class ConsultaServiceImpl implements IConsultaService {
 
 	@Autowired
 	private IConsultaRepo consultaRepo;
+	
+	@Autowired
+	private IConsultaExamenRepo consultaExamenRepo;
 	
 	@Override
 	public Consulta registrar(Consulta cons) {
@@ -40,6 +46,15 @@ public class ConsultaServiceImpl implements IConsultaService {
 	@Override
 	public void eliminar(Integer id) {
 		consultaRepo.deleteById(id);
+	}
+
+	@Override
+	@Transactional
+	public Consulta registrarTransaccional(ConsultaListaExamenDTO consultaDTO) {
+		consultaDTO.getConsulta().getDetalleConsulta().forEach(det -> det.setConsulta(consultaDTO.getConsulta()));
+		consultaRepo.save(consultaDTO.getConsulta());
+		consultaDTO.getListExamen().forEach( e -> consultaExamenRepo.registrar(consultaDTO.getConsulta().getIdConsulta(), e.getIdExamen()));
+		return consultaDTO.getConsulta();
 	}
 
 }

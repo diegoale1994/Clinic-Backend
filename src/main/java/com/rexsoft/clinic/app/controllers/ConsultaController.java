@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.rexsoft.clinic.app.dto.ConsultaListaExamenDTO;
 import com.rexsoft.clinic.app.exception.ModeloNotFoundException;
 import com.rexsoft.clinic.app.models.Consulta;
 import com.rexsoft.clinic.app.services.IConsultaService;
@@ -54,9 +55,9 @@ public class ConsultaController {
 		return resource;
 	}
 	
-	@PostMapping
-	public ResponseEntity<Object> registrar(@Valid @RequestBody Consulta consulta) {
-		Consulta consu = consultaService.registrar(consulta);
+	@PostMapping(produces = "application/json", consumes = "application/json")
+	public ResponseEntity<Object> registrar(@Valid @RequestBody ConsultaListaExamenDTO consulta) {
+		Consulta consu = consultaService.registrarTransaccional(consulta);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(consu.getIdConsulta()).toUri();
 		return ResponseEntity.created(location).build();
 	}
