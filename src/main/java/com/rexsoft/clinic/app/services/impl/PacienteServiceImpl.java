@@ -3,6 +3,8 @@ package com.rexsoft.clinic.app.services.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.rexsoft.clinic.app.models.Paciente;
@@ -38,6 +40,11 @@ public class PacienteServiceImpl implements IPacienteService {
 	@Override
 	public void eliminar(Integer id) {
 		pacienteRepo.deleteById(id);
+	}
+
+	@Override
+	public Page<Paciente> listarPageable(Pageable page) {
+		return pacienteRepo.findAll(page);
 	}
 
 }

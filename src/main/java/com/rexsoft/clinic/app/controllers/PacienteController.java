@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -38,6 +40,12 @@ public class PacienteController {
 	public ResponseEntity<List<Paciente>> listar(){
 		List<Paciente> pacientes = pacienteService.listartodos();
 		return new ResponseEntity<List<Paciente>>(pacientes,HttpStatus.OK);
+	}
+	
+	@GetMapping("/pageable")
+	public ResponseEntity<Page<Paciente>> listarPaginado(Pageable page){
+		Page<Paciente> pacientes = pacienteService.listarPageable(page);
+		return new ResponseEntity<Page<Paciente>>(pacientes,HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")

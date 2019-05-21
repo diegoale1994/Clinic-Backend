@@ -1,7 +1,5 @@
 package com.rexsoft.clinic.app.models;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,8 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 @Entity
 @Table(name = "detalle_consultas")
@@ -33,10 +29,6 @@ public class DetalleConsulta {
 
 	@Column(name = "tratamiento", nullable = false, length = 300)
 	private String tratamiento;
-	
-	@JsonSerialize(using = ToStringSerializer.class)
-	private LocalDateTime fecha;
-
 
 	public Integer getIdDetalle() {
 		return idDetalle;
@@ -69,14 +61,5 @@ public class DetalleConsulta {
 	public void setTratamiento(String tratamiento) {
 		this.tratamiento = tratamiento;
 	}
-
-	public LocalDateTime getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(LocalDateTime fecha) {
-		this.fecha = fecha;
-	}
-	
 
 }
