@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rexsoft.clinic.app.dto.ConsultaListaExamenDTO;
+import com.rexsoft.clinic.app.dto.FiltroConsultaDTO;
 import com.rexsoft.clinic.app.models.Consulta;
 import com.rexsoft.clinic.app.repos.IConsultaExamenRepo;
 import com.rexsoft.clinic.app.repos.IConsultaRepo;
@@ -55,6 +56,16 @@ public class ConsultaServiceImpl implements IConsultaService {
 		consultaRepo.save(consultaDTO.getConsulta());
 		consultaDTO.getListExamen().forEach( e -> consultaExamenRepo.registrar(consultaDTO.getConsulta().getIdConsulta(), e.getIdExamen()));
 		return consultaDTO.getConsulta();
+	}
+
+	@Override
+	public List<Consulta> buscar(FiltroConsultaDTO filtro) {
+		return consultaRepo.buscar(filtro.getDni(), filtro.getNombreCompleto());
+	}
+
+	@Override
+	public List<Consulta> buscarfecha(FiltroConsultaDTO filtro) {
+		return consultaRepo.buscarFecha(filtro.getFechaConsulta(), filtro.getFechaConsulta().plusDays(1));
 	}
 
 }

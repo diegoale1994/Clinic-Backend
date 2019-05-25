@@ -27,6 +27,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rexsoft.clinic.app.dto.ConsultaDTO;
 import com.rexsoft.clinic.app.dto.ConsultaListaExamenDTO;
+import com.rexsoft.clinic.app.dto.FiltroConsultaDTO;
 import com.rexsoft.clinic.app.exception.ModeloNotFoundException;
 import com.rexsoft.clinic.app.models.Consulta;
 import com.rexsoft.clinic.app.services.IConsultaService;
@@ -109,4 +110,19 @@ public class ConsultaController {
 		}
 		return new ResponseEntity<Object>(HttpStatus.OK);
 	}
+	
+	@PostMapping(value = "/buscar", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Consulta>> buscar(@RequestBody FiltroConsultaDTO filtro){
+		List<Consulta> consultas = new ArrayList<>();
+		
+		if(filtro != null) {
+			if(filtro.getFechaConsulta() != null) {
+				consultas = consultaService.buscarfecha(filtro);
+			}else {
+				consultas = consultaService.buscar(filtro);
+			}
+		}
+		return new ResponseEntity<List<Consulta>>(consultas, HttpStatus.OK);
+	}
+	
 }
