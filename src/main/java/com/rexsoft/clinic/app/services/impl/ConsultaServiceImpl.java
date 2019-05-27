@@ -1,5 +1,6 @@
 package com.rexsoft.clinic.app.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rexsoft.clinic.app.dto.ConsultaListaExamenDTO;
+import com.rexsoft.clinic.app.dto.ConsultaResumenDTO;
 import com.rexsoft.clinic.app.dto.FiltroConsultaDTO;
 import com.rexsoft.clinic.app.models.Consulta;
 import com.rexsoft.clinic.app.repos.IConsultaExamenRepo;
@@ -66,6 +68,18 @@ public class ConsultaServiceImpl implements IConsultaService {
 	@Override
 	public List<Consulta> buscarfecha(FiltroConsultaDTO filtro) {
 		return consultaRepo.buscarFecha(filtro.getFechaConsulta(), filtro.getFechaConsulta().plusDays(1));
+	}
+
+	@Override
+	public List<ConsultaResumenDTO> listaResumen() {
+		List<ConsultaResumenDTO> consulta = new ArrayList<>();
+		consultaRepo.listarResumen().forEach(x -> {
+			ConsultaResumenDTO cr = new ConsultaResumenDTO();
+			cr.setCantidad(Integer.parseInt(String.valueOf(x[0])));
+			cr.setFecha(String.valueOf(x[1]));
+			consulta.add(cr);
+		});
+		return consulta;
 	}
 
 }

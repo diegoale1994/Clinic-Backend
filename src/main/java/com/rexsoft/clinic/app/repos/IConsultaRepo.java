@@ -16,4 +16,8 @@ public interface IConsultaRepo extends JpaRepository<Consulta, Integer> {
 
 	@Query("from Consulta c where c.fecha between :fechaConsulta and:fechaS")
 	List<Consulta> buscarFecha(@Param("fechaConsulta") LocalDateTime fechaConsulta, @Param("fechaS") LocalDateTime fechaS);
+
+	@Query(value = "SELECT * FROM fn_listarResumen()", nativeQuery = true)
+	List<Object[]> listarResumen(); 
+	
 }
