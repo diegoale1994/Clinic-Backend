@@ -1,9 +1,11 @@
 package com.rexsoft.clinic.app.services.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,11 @@ import com.rexsoft.clinic.app.models.Consulta;
 import com.rexsoft.clinic.app.repos.IConsultaExamenRepo;
 import com.rexsoft.clinic.app.repos.IConsultaRepo;
 import com.rexsoft.clinic.app.services.IConsultaService;
+
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 
 @Service
@@ -80,6 +87,19 @@ public class ConsultaServiceImpl implements IConsultaService {
 			consulta.add(cr);
 		});
 		return consulta;
+	}
+
+	@Override
+	public byte[] generarReporte() {
+		byte[] data = null;
+		try {
+			File file = new ClassPathResource("/reports/consultas.jasper").getFile();
+			JasperPrint print = JasperFillManager.fillReport(file.getPath(), null, new JRBeanCollectionDataSource(this.listaResumen()));
+			data = JasperExportManager.exportReportToPdf(print);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return data;
 	}
 
 }

@@ -131,4 +131,11 @@ public class ConsultaController {
 		List<ConsultaResumenDTO> consultas = consultaService.listaResumen();
 		return new ResponseEntity<List<ConsultaResumenDTO>>(consultas, HttpStatus.OK);
 	}
+	
+	@GetMapping(value = "/generarReporte", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<byte[]> generarReporte() {
+		byte[] data = null;
+		data = consultaService.generarReporte();
+		return new ResponseEntity<byte[]>(data, HttpStatus.OK);
+	}
 }
