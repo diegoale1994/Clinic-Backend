@@ -3,6 +3,7 @@ package com.rexsoft.clinic.app.controllers;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rexsoft.clinic.app.dto.ConsultaDTO;
@@ -30,7 +33,9 @@ import com.rexsoft.clinic.app.dto.ConsultaListaExamenDTO;
 import com.rexsoft.clinic.app.dto.ConsultaResumenDTO;
 import com.rexsoft.clinic.app.dto.FiltroConsultaDTO;
 import com.rexsoft.clinic.app.exception.ModeloNotFoundException;
+import com.rexsoft.clinic.app.models.Archivo;
 import com.rexsoft.clinic.app.models.Consulta;
+import com.rexsoft.clinic.app.services.IArchivoService;
 import com.rexsoft.clinic.app.services.IConsultaService;
 
 
@@ -42,6 +47,8 @@ public class ConsultaController {
 	@Autowired
 	private IConsultaService consultaService;
 	
+	@Autowired
+	private IArchivoService archivoService;
 	@GetMapping
 	public ResponseEntity<List<Consulta>> listar(){
 		List<Consulta> consultas = consultaService.listartodos();
@@ -137,5 +144,22 @@ public class ConsultaController {
 		byte[] data = null;
 		data = consultaService.generarReporte();
 		return new ResponseEntity<byte[]>(data, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "/guardarArchivo", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+	public ResponseEntity<Integer> guardarArchivo(@RequestParam("file") MultipartFile file) throws IOException {
+		int rpta = 0;
+		Archivo ar = new Archivo();
+		ar.setFilename(file.getName());
+		ar.setValue(file.getBytes());
+		ar.setFiletype(file.getContentType());
+		rpta = archivoService.guardar(ar);
+		return new ResponseEntity<Integer>(rpta, HttpStatus.OK);
+	}
+	
+	@GetMapping(value="/leerArchivo/{idArchivo}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<byte[]> leerArchivo(@PathVariable("idArchivo") Integer idArchivo){
+		byte[] arr = archivoService.leerArchivo(idArchivo);
+		return new ResponseEntity<byte[]>(arr, HttpStatus.OK);
 	}
 }
